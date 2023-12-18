@@ -16,19 +16,19 @@ buildMap() {
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 20,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(this.Map);
+}).addTo(this.map);
 
 
 const marker = L.marker(this.coordinates)
 marker
 .addTo(this.map)
-.bindPopup('<p1><b>Here I am Suckas</b><br></p1>')
+.bindPopup('<p1><b>You are here</b><br></p1>')
 .openPopup()
 
 },
 
 addMarkers() {
-    for (var i = 0; i < this.businesses.lenght; i++) {
+    for (var i = 0; i < this.businesses.length; i++) {
         this.markers = L.marker([
             this.businesses[i].lat,
             this.business[i].long,
@@ -47,8 +47,8 @@ async function getCoords() {
     return [pos.coords.latitude, pos.coords.longitude]
 }
 async function getFourSquare(business) {
-    let clientId = '3J5YNCNKZRXEAIRVG3SBTUIGGHSSZLSUYVGAL4IPG0EPA34'
-    let clientSecret = 'IPGTGUNL5IUETNNIQXNVXWQD@AB!QDIWZZY0B5UXb0NHPDQU'
+    let clientId = '3J5YNCNKZRXEAIRVG3SBTUIGGHSSZLSUYVGAL4IPG0EPA34';
+    let clientSecret = 'IPGTGUNL5IUETNNIQXNVXWQD@AB!QDIWZZY0B5UXb0NHPDQU';
     let limit = 5 
     let lat = myMap.coordinates[0]
     let lon = myMap.coordinates[1]
@@ -56,13 +56,13 @@ async function getFourSquare(business) {
         `https://api.foursquare.com/v2/venues/explore?client_id=${clientId}&client_secret=${clentSecret}&v=20180323&limit=${limit}&ll=${lat},${lon}&query=${business}`
 	);
     let data = await response.text()
-    let parseData = JSON.parse(data)
-    let businesses = parsedData.response.groups[0].items
+    let parseData = JSON.parse(data);
+    let businesses = parseData.response.groups[0].items
     return businesses
 }
 
 function processBusinesses(data) {
-    let businesses = data.map((element) => {
+    let businesses = parseData.map((element) => {
         let location = {
             name: element.venue.name,
             lat: element.venue.location.lat,
@@ -79,29 +79,31 @@ window.onload = async () => {
     myMap.buildMap()
 }
 
-document.getElementById('submit').addEventListener('click', async (event) => {
+document.getElementById('business').addEventListener('change', async (event) => {
     event.preventDefault()
-    let business = document.getElementById('business').value;
-})
+    let business = event.target.value;
+    console.log(business);
+});
 // navigator.geolocation.getCurrentPosition(function(position) {
 //     const latitude = position.coords.latitude;
 //     const longitude = position.coords.longitude;
 
 //     console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
 // })
+// const myMaps = L.map('map').setview([35.4813406, -78.545404], 13);
 
-const redMarker = L.marker([35.4813406, -78.545404])
-redMarker.addTo(myMap).bindPopup('<p1><b>Benson, NC</b></p1>').openPopup()
+// const redMarker = L.marker([35.4813406, -78.545404]);
+// redMarker.addTo(myMap).bindPopup('<p1><b>Benson, NC</b></p1>').openPopup();
 
-const coffee = L.marker([35.51658, -78.56025]).addTo(myMap).bindPopup('<p1><b>Dunkin Donuts</b></p1>').openPopup()
+// const coffee = L.marker([35.51658, -78.56025]).addTo(myMap).bindPopup('<p1><b>Dunkin Donuts</b></p1>').openPopup()
 
-const Hotel = L.marker( [3560746, -7856025]).addTo(myMap).bindPopup('<p1><b>Super 8</b></p1>').openPopup()
+// const Hotel = L.marker( [3560746, -7856025]).addTo(myMap).bindPopup('<p1><b>Super 8</b></p1>').openPopup()
 
-const Resturant = L.marker([35.51553, -78.55525]).addTo(myMap).bindPopup('<p1><b>Red Neck BBQ</b></p1>').openPopup()
+// const Resturant = L.marker([35.51553, -78.55525]).addTo(myMap).bindPopup('<p1><b>Red Neck BBQ</b></p1>').openPopup()
 
-const Market = L.marker([35.51819, -78.56071]).addTo(myMap).bindPopup('<p1><b>Food Lion</b></p1>').openPopup()
+// const Market = L.marker([35.51819, -78.56071]).addTo(myMap).bindPopup('<p1><b>Food Lion</b></p1>').openPopup()
 
-const bus5 = L.marker([35.4813406, -78.545404]).addTo(myMap).bindPopup('<p1><b>Home</b></p1>').openPopup()
+// const bus5 = L.marker([35.4813406, -78.545404]).addTo(myMap).bindPopup('<p1><b>Home</b></p1>').openPopup()
 
 //adding polygon//
 // const polygon = L.polygon([

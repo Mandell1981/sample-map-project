@@ -15,7 +15,7 @@ buildMap() {
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 20,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 }).addTo(this.map);
 
 
@@ -44,20 +44,28 @@ async function getCoords() {
     const pos = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject)
     });
+    console.log(myMap)
     return [pos.coords.latitude, pos.coords.longitude]
 }
 async function getFourSquare(business) {
+    const option = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: 'fsq3atTHiCaBogRfFunxJOE0di3X8mGCU6a8N+nAksEn7X8=',
+
+        }
+    }
     let clientId = '3J5YNCNKZRXEAIRVG3SBTUIGGHSSZLSUYVGAL4IPG0EPA34';
     let clientSecret = 'IPGTGUNL5IUETNNIQXNVXWQD@AB!QDIWZZY0B5UXb0NHPDQU';
     let limit = 5 
     let lat = myMap.coordinates[0]
     let lon = myMap.coordinates[1]
-    let response = await fetch(
-        `https://api.foursquare.com/v2/venues/explore?client_id=${clientId}&client_secret=${clentSecret}&v=20180323&limit=${limit}&ll=${lat},${lon}&query=${business}`
-	);
+    let response = await fetch(`https:// api.foursquare.com/v3/places/search?&query=${business}&limit=${limit}&ll=${lat}%2C${lon}`, option);
     let data = await response.text()
     let parseData = JSON.parse(data);
     let businesses = parseData.response.groups[0].items
+    console.log(business)
     return businesses
 }
 
@@ -70,6 +78,7 @@ function processBusinesses(data) {
         };
         return location
     })
+    console.log(businesses)
     return businesses
 }
 
@@ -79,9 +88,12 @@ window.onload = async () => {
     myMap.buildMap()
 }
 
-document.getElementById('business').addEventListener('change', async (event) => {
+document.getElementById('submit').addEventListener('click', async (event) => {
     event.preventDefault()
-    let business = event.target.value;
+    let business = document.getElementById('business').value;
+    let data = await getFourSquare('business')
+    myMap.businesses = processBusinesses(data)
+    myMap.addMarkers()
     console.log(business);
 });
 // navigator.geolocation.getCurrentPosition(function(position) {
